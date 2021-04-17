@@ -19,9 +19,9 @@ def getExercises(level):
 	return exercises
 
 
-def getBioInfo(userName):
+def getBioInfo(username):
 	bio = {}
-	bio["username"] = userName
+	bio["username"] = username
 	bio["pw"] = input("Enter a password: ")
 	bio["name"] = input("Enter your name: ")
 	bio["age"] = input("Enter your age: ")
@@ -32,23 +32,22 @@ def getBioInfo(userName):
 	bio["exercises"] = getExercises(bio["level"]) # NUMBER EXERCISES?
 	return bio
 
-def getFilePath(userName):
-	fileName = userName + ".txt"
+def getFilePath(username):
+	fileName = username + ".txt"
 	filePath = "./userInfo/" + fileName
 	return filePath
 
 
-def createProfile(userName):
-	bio = getBioInfo(userName)
+def createProfile(username):
+	bio = getBioInfo(username)
 	#print(bio)
-	file = open(getFilePath(userName), "w+")
+	file = open(getFilePath(username), "w+")
 	writeBio(file, bio)
 	file.close()
 
 
-def isNameFree(userName):
-	fileName = userName + ".txt"
-	filePath = "./userInfo/" + fileName
+def isNameFree(username):
+	filePath = getFilePath(username)
 	try:
 		file = open(filePath,  "r+")
 	except:
@@ -61,20 +60,132 @@ def isNameFree(userName):
 	else:
 		return False
 
+def doesNameExist(username):
+	filePath = getFilePath(username)
+	try:
+		file = open(filePath, "r+")
+	except:
+		return False
+	file.close()
+	return True
+
+
+def checkPassword(username, password):
+	filePath = getFilePath(username)
+	file = open("./userInfo/amaus.txt", "r")
+	lines = getFileLines(file)
+	
+	if lines[1] == password:
+		return True
+	return False
+
+
+def getFileLines(file):
+	lines = []
+	for line in file:
+		lines.append(line[:-1])
+	return lines
+
+def getName(username):
+	filePath = getFilePath(username)
+	file = open("./userInfo/amaus.txt", "r")
+	lines = getFileLines(file)
+	file.close()
+	return lines[2]
+
+def getAge(username):
+	filePath = getFilePath(username)
+	file = open("./userInfo/amaus.txt", "r")
+	lines = getFileLines(file)
+	file.close()
+	return lines[3]
+
+def getPronouns(username):
+	filePath = getFilePath(username)
+	file = open("./userInfo/amaus.txt", "r")
+	lines = getFileLines(file)
+	file.close()
+	return lines[4]
+
+def getHeight(username):
+	filePath = getFilePath(username)
+	file = open("./userInfo/amaus.txt", "r")
+	lines = getFileLines(file)
+	file.close()
+	return lines[5]
+
+def getWeight(username):
+	filePath = getFilePath(username)
+	file = open("./userInfo/amaus.txt", "r")
+	lines = getFileLines(file)
+	file.close()
+	return lines[6]
+
+def getLevel(username):
+	filePath = getFilePath(username)
+	file = open("./userInfo/amaus.txt", "r")
+	lines = getFileLines(file)
+	file.close()
+	return lines[7]
+
+def getExercises(username):
+	filePath = getFilePath(username)
+	file = open("./userInfo/amaus.txt", "r+")
+	lines = getFileLines(file)
+	exercises = []
+	atExercises = False
+	for line in lines:
+		if atExercises:
+			exercises.append(line)
+		if line == "EXERCISES":
+			atExercises = True
+	file.close()
+	return exercises
+
+def signedIn(username):
+	print(getName(username) + ", you are now signed in.")
+
+
 def signIn():
 	print("signIn")
+	username = input("Please enter your username: ")
+	exists = doesNameExist(username) # checks if username is in database already
+	if exists:
+		password = input("Please enter your password: ")
+		isCorrect = checkPassword(username, password)
+		if isCorrect:
+			print("Username and password accepted. Welcome, " + getName(username))
+			signedIn(username)
+		else:
+			print("Incorrect password.")
 
-def signUp(): # don't quit if userName is not available
-	#print("signUp")
-	userName = input("Please enter your username: ")
-	available = isNameFree(userName) # checks if the username is free or not
+	else:
+		print("That username does not exist in our database. Would you like to sign up?")
+		choice = input("Enter \"yes\" or \"no\": ")
+		if choice == "yes":
+			signUp()
+		else:
+			print("Have a nice day!")
+
+
+
+def signUp(): 
+	print("signUp")
+	username = input("Please enter your username: ")
+	available = isNameFree(username) # checks if the username is free
 	#print(available)
 	while not available:
-		print("The username " + userName + " already exists. Please try another one")
-		userName = input("Please enter another username: ")
-		available = isNameFree(userName)
+		print("The username \"" + username + "\" already exists. Please try another one")
+		username = input("Please enter another username: ")
+		available = isNameFree(username)
 	print("That username is available!")
-	userInfo = createProfile(userName)
+	userInfo = createProfile(username)
+	choice = input("Would you like to sign in? Enter \"yes\" or \"no\": ")
+	if choice == "yes":
+		signIn()
+	else:
+		print("Have a nice day!")
+
 
 
 
