@@ -72,9 +72,8 @@ def doesNameExist(username):
 
 def checkPassword(username, password):
 	filePath = getFilePath(username)
-	file = open("./userInfo/amaus.txt", "r")
+	file = open(filePath, "r")
 	lines = getFileLines(file)
-	
 	if lines[1] == password:
 		return True
 	return False
@@ -88,49 +87,49 @@ def getFileLines(file):
 
 def getName(username):
 	filePath = getFilePath(username)
-	file = open("./userInfo/amaus.txt", "r")
+	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[2]
 
 def getAge(username):
 	filePath = getFilePath(username)
-	file = open("./userInfo/amaus.txt", "r")
+	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[3]
 
 def getPronouns(username):
 	filePath = getFilePath(username)
-	file = open("./userInfo/amaus.txt", "r")
+	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[4]
 
 def getHeight(username):
 	filePath = getFilePath(username)
-	file = open("./userInfo/amaus.txt", "r")
+	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[5]
 
 def getWeight(username):
 	filePath = getFilePath(username)
-	file = open("./userInfo/amaus.txt", "r")
+	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[6]
 
 def getLevel(username):
 	filePath = getFilePath(username)
-	file = open("./userInfo/amaus.txt", "r")
+	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[7]
 
 def getExercises(username):
 	filePath = getFilePath(username)
-	file = open("./userInfo/amaus.txt", "r+")
+	file = open(filePath, "r")
 	lines = getFileLines(file)
 	exercises = []
 	atExercises = False
