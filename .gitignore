@@ -1,8 +1,11 @@
 # Project Files
-/userInfo/*.txt
 test.py
-*.DS_Store
+*.DS_store
 .gitignore
+yt.py
+env
+__pycache__
+/userInfo/*.txt
 
 
 # Byte-compiled / optimized / DLL files
