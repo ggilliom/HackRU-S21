@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 
 def getVideos(interest):
-	apiKey = "AIzaSyB5cen77m2JQjahw-sWEtrztb78Jg7-KUc"
+	apiKey = "AIzaSyA1Ge1vSeCOXxqk72rpM4IDVlweHXCS3ws"
 	youtube = build('youtube', 'v3', developerKey=apiKey)
 	request = youtube.search().list(
 		part='snippet',
@@ -37,7 +37,7 @@ def getVideos(interest):
 	return urls, videos, images, ids
 
 def getChannels(interest):
-	apiKey = "AIzaSyB5cen77m2JQjahw-sWEtrztb78Jg7-KUc"
+	apiKey = "AIzaSyA1Ge1vSeCOXxqk72rpM4IDVlweHXCS3ws"
 	youtube = build('youtube', 'v3', developerKey=apiKey)
 	request = youtube.search().list(
 		part='snippet',
