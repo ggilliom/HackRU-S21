@@ -1,11 +1,12 @@
 import tkinter as tk
 import logic as l
+import webbrowser
 
 
 user_data = {}
 main_username = "blank"
 user_data["Username"] = "blank"
-user_data["Interests"] = "blank1"
+#user_data["Interests"] = "blank1"
 #name = tk.StringVar()
 
 class HealthGUI(tk.Tk):
@@ -199,7 +200,7 @@ class SignUpPage1(tk.Frame):
 			user_data[fields[i]] = text
 			print(text)
 
-		user_data["interests"] = self.parse_interests(self.interests.get("1.0", tk.END))
+		user_data["Interests"] = self.parse_interests(self.interests.get("1.0", tk.END))
 		print(user_data)
 
 		username = user_data["Username"]
@@ -209,8 +210,13 @@ class SignUpPage1(tk.Frame):
 		l.writeBio(file, user_data)
 		self.cont.display_page(FirstPage)
 
+# to store all of the stuff about the videos we are scraping
+user_videos = []
+user_urls = []
+user_images = []
+user_ids = []
 
-
+all_stuff = {}
 
 class MainPage(tk.Frame):
 	def __init__(self, master, cont):
@@ -218,6 +224,8 @@ class MainPage(tk.Frame):
 		self.grid_columnconfigure(0, weight=1)
 		self.grid_columnconfigure(1, weight=1)
 		self.grid_columnconfigure(2, weight=1)
+		self.grid_columnconfigure(3, weight=1)
+		self.grid_columnconfigure(4, weight=1)
 		self.lab = tk.Label(self, text="Welcome to your Health & Fitness Account!", font='Helvetica 18 bold')
 		self.lab.grid( row = 0, column=0, columnspan=3, pady=15)
 		
@@ -226,10 +234,32 @@ class MainPage(tk.Frame):
 		tk.Button(self, text="Log Food").grid(row=1, column=0, pady=20)
 		tk.Button(self, text="Log Workout").grid(row=1, column=1, pady=20)
 
+	def oepn_url(self, url):
+		webbrowser.open(url, new=1)
+
+	def show_video_content(self, interest):
+		local_interest = all_stuff[interest]
+		j = 2
+		for title, url in zip(local_interest["names"], all_stuff[interest]['urls']):
+			tk.Label(self, text=title).grid(row=j, column=1)
+			tk.Button(self, text="Go to video!", command = lambda: self.oepn_url(url)).grid(row=j, column=1)
+			j += 1
+			if j == 6:
+				break
+
+
 	def update_page(self):
 		self.get_all_user_data()
+		l1 = [interest for interest in user_data["Interests"]]
 		for i in range(len(user_data["Interests"]) - 1):
-			tk.Button(self, text="Show Videos Related to " + user_data["Interests"][i]).grid(row=i+2, column=0, pady=20)
+			# plae button on screen
+			tk.Button(self, text="Show Videos Related to " + user_data["Interests"][i], command = lambda: self.show_video_content(l1[i])).grid(row=i+2, column=0, pady=20)
+			# append to user_videos
+			user_urls, user_videos, user_images, user_ids = l.getVideos(user_data["Interests"][i])
+			all_stuff[user_data["Interests"][i]] = {"urls": user_urls, "names": user_videos, "images": user_images, "ids": user_ids}
+
+		print(all_stuff)
+
 		self.lab.config(text = "Welcome to your Health & Fitness Account, " + user_data["Name"])
 		
 	def get_all_user_data(self):
