@@ -5,6 +5,7 @@ from io import BytesIO
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 
 def getVideos(interest):
@@ -72,7 +73,8 @@ def saveImages(images, ids): # images are image URLs, ids are the unique id of t
 	for spot in range(10):
 		response = requests.get(images[spot])
 		img = Image.open(BytesIO(response.content))
-		filePath = "./images/" + ids[spot] + ".jpg"
+		#filePath = "./images/" + ids[spot] + ".jpg"
+		filePath = getFilePath(ids[spot], ".jpg")
 		imgPaths.append(filePath)
 		img = img.save(filePath)
 	return imgPaths
@@ -109,12 +111,27 @@ def getBioInfo(username):
 	bio["height"] = input("Enter your height: ")
 	bio["weight"] = input("Enter your weight: ")
 	bio["level"] = input("Enter low, medium, or high: ")
-	bio["interests"] = inputInterests() # NUMBER INTERESTS?
+	bio["Interests"] = inputInterests() # NUMBER INTERESTS?
 	return bio
 
-def getFilePath(username, ext):
-	fileName = username + ext
-	filePath = "./userInfo/" + fileName
+
+def deleteProfile(username):
+	bioPath = getFilePath(username, ".txt")
+	fitnessPath = getFilePath(username, ".csv")
+	os.remove(bioPath)
+
+	doesFitExist = doesNameExist(username, ".csv")
+	if doesFitExist:
+		os.remove(fitnessPath)
+
+def getFilePath(name, ext):
+	fileName = name + ext
+	if ext == ".txt":
+		filePath = "./userInfo/" + fileName
+	if ext == ".csv":
+		filePath = "./fitnessInfo/" + fileName
+	if ext == ".jpg":
+		fitePath = "./images/" + fileName
 	return filePath
 
 
