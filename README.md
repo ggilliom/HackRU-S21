@@ -1,2 +1,3 @@
 # HackRU-S21
-Collaborative Spring 2021n HackRU project 
+Collaborative Spring 2021 HackRU project
+By: Bennett Kahn and Garrett Gilliom
