@@ -126,12 +126,13 @@ def deleteProfile(username):
 
 def getFilePath(name, ext):
 	fileName = name + ext
+	filePath = ""
 	if ext == ".txt":
 		filePath = "./userInfo/" + fileName
 	if ext == ".csv":
 		filePath = "./fitnessInfo/" + fileName
 	if ext == ".jpg":
-		fitePath = "./images/" + fileName
+		filePath = "./images/" + fileName
 	return filePath
 
 
