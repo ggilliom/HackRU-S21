@@ -1,12 +1,12 @@
 from googleapiclient.discovery import build
 
-def getVideoInfo(exercise):
+def getVideoInfo(interest):
 	apiKey = "AIzaSyB5cen77m2JQjahw-sWEtrztb78Jg7-KUc"
 	youtube = build('youtube', 'v3', developerKey=apiKey)
 	request = youtube.search().list(
 		part='snippet',
 		maxResults=10,
-		q=exercise,
+		q=interest,
 		relevanceLanguage="en",
 		#order="rating",
 		type="video"
@@ -15,15 +15,23 @@ def getVideoInfo(exercise):
 	items = response['items']
 	urls = []
 	videos = []
+	images = []
 	for item in items:
 		video = item['snippet']['title']
 		videos.append(video)
 		videoId = item['id']['videoId']
 		url = 'https://www.youtube.com/watch?v=' + videoId
 		urls.append(url)
-	return urls, videos
+		image = item['snippet']['thumbnails']['default']['url']
+		images.append(image)
+	return urls, videos, images
+
+def getChannels():
+	pass
 
 
+def saveThumbnails():
+	pass
 
 
 def writeBio(file, bio):
@@ -36,15 +44,15 @@ def writeBio(file, bio):
 		else:
 			file.write(bio[key] + "\n")
 
-def inputExercises():
-	exercises = []
-	print("Enter some exercises below. Enter \"exit\" to exit")
+def inputInterests():
+	interests = []
+	print("Enter some interests below. Enter \"exit\" to exit")
 	choice = input()
 	while choice != "exit":
-		exercises.append(choice)
+		interests.append(choice)
 		choice = input()
-	#print(exercises)
-	return exercises
+	#print(interests)
+	return interests
 
 
 def getBioInfo(username):
@@ -57,7 +65,7 @@ def getBioInfo(username):
 	bio["height"] = input("Enter your height: ")
 	bio["weight"] = input("Enter your weight: ")
 	bio["level"] = input("Enter low, medium, or high: ")
-	bio["exercises"] = inputExercises() # NUMBER EXERCISES?
+	bio["interests"] = inputInterests() # NUMBER INTERESTS?
 	return bio
 
 def getFilePath(username):
@@ -155,19 +163,19 @@ def getLevel(username):
 	file.close()
 	return lines[7]
 
-def getExercises(username):
+def getInterests(username):
 	filePath = getFilePath(username)
 	file = open(filePath, "r")
 	lines = getFileLines(file)
-	exercises = []
-	atExercises = False
+	interests = []
+	atInterests = False
 	for line in lines:
-		if atExercises:
-			exercises.append(line)
-		if line == "EXERCISES":
-			atExercises = True
+		if atInterests:
+			interests.append(line)
+		if line == "INTERESTS":
+			atInterests = True
 	file.close()
-	return exercises
+	return interests
 
 def signedIn(username):
 	print(getName(username) + ", you are now signed in.")
