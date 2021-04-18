@@ -6,6 +6,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, 
 NavigationToolbar2Tk)
 import datetime
+from PIL import ImageTk, Image
 
 
 user_data = {}
@@ -225,18 +226,27 @@ user_ids = []
 
 all_stuff = {}
 
+good_images = {}
+
 class MainPage(tk.Frame):
 	def __init__(self, master, cont):
 		self.cont = cont
 		tk.Frame.__init__(self, master)
-		self.buttons = [tk.Button(self), tk.Button(self), tk.Button(self), tk.Button(self), tk.Button(self), tk.Button(self)]
+
 		self.grid_columnconfigure(0, weight=1)
 		self.grid_columnconfigure(1, weight=1)
 		self.grid_columnconfigure(2, weight=1)
 		self.grid_columnconfigure(3, weight=1)
 		self.grid_columnconfigure(4, weight=1)
+
+
+		self.buttons = [tk.Button(self), tk.Button(self), tk.Button(self), tk.Button(self), tk.Button(self), tk.Button(self)]
+		self.img_labels = [tk.Label(self), tk.Label(self), tk.Label(self), tk.Label(self), tk.Label(self), tk.Label(self)]
+		self.photo_widgets = [tk.PhotoImage(), tk.PhotoImage(), tk.PhotoImage(), tk.PhotoImage(), tk.PhotoImage(), tk.PhotoImage()]
+
+		
 		self.lab = tk.Label(self, text="Welcome to your Health & Fitness Account!", font='Helvetica 18 bold')
-		self.lab.grid( row = 0, column=1, columnspan=3, pady=15)
+		self.lab.grid(row = 0, column=1, columnspan=3, pady=15)
 		
 		tk.Button(self, text="Sign Out", command = lambda: cont.display_page(FirstPage)).grid(row=0, column=0)
 		tk.Button(self, text="Refresh Page", command=lambda: self.update_page()).grid(row=0, column=4)
@@ -256,7 +266,7 @@ class MainPage(tk.Frame):
 		self.cont.display_page(DataVis)
 
 	def oepn_url(self, url):
-		webbrowser.open('nfl.com', new=1)
+		webbrowser.open(url, new=1)
 
 	def show_video_content(self, interest):
 		print(interest)
@@ -268,8 +278,14 @@ class MainPage(tk.Frame):
 			j1 = j + 1
 			self.buttons[q].grid(row=j, column=1, pady=10)
 			self.buttons[q].config(text= title, command = lambda url = url: self.oepn_url(url))
+
+			img = ImageTk.PhotoImage(Image.open(good_images[interest][q]))
+
+			self.img_labels[q].grid(row=j1, column=1)
+			self.img_labels[q].config(image=img)
+			self.img_labels[q].photo = img
 			#tk.Button(self, text=title, command = lambda url = url: self.oepn_url(url)).grid(row=j, column=1, pady=10)
-			j += 1
+			j += 2
 			q += 1
 			if j == 10:
 				break
@@ -286,6 +302,10 @@ class MainPage(tk.Frame):
 			# append to user_videos
 			user_urls, user_videos, user_images, user_ids = l.getVideos(user_data["Interests"][i])
 			all_stuff[user_data["Interests"][i]] = {"urls": user_urls, "names": user_videos, "images": user_images, "ids": user_ids}
+
+			good_images[user_data["Interests"][i]] = l.saveImages(all_stuff[user_data["Interests"][i]]["images"], all_stuff[user_data["Interests"][i]]["ids"])
+
+
 
 		#print(all_stuff)
 
@@ -345,17 +365,18 @@ class LogWorkoutPage(tk.Frame):
 		print(date)
 		dist = self.e2.get()
 		time = self.e3.get()
-		month = date[0:2]
-		day = date[3:5]
-		year = 2021
-		#year = date[-4:-1]
-		print("month: ", month)
-		print("day: ", day)
-		print("year: ", year)
-		datetime.datetime(int(year), int(month), int(day))
+		
 		
 		try:
 			#month, day, year = date.split('/')
+			month = date[0:2]
+			day = date[3:5]
+			#year = 2021
+			year = date[-4:-1]
+			print("month: ", month)
+			print("day: ", day)
+			print("year: ", year)
+			datetime.datetime(int(year), int(month), int(day))
 			
 			float_dist = float(dist)
 			float_time = float(time)
