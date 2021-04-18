@@ -1,3 +1,31 @@
+from googleapiclient.discovery import build
+
+def getVideoInfo(exercise):
+	apiKey = "AIzaSyB5cen77m2JQjahw-sWEtrztb78Jg7-KUc"
+	youtube = build('youtube', 'v3', developerKey=apiKey)
+	request = youtube.search().list(
+		part='snippet',
+		maxResults=10,
+		q=exercise,
+		relevanceLanguage="en",
+		#order="rating",
+		type="video"
+	)
+	response = request.execute()
+	items = response['items']
+	urls = []
+	videos = []
+	for item in items:
+		video = item['snippet']['title']
+		videos.append(video)
+		videoId = item['id']['videoId']
+		url = 'https://www.youtube.com/watch?v=' + videoId
+		urls.append(url)
+	return urls, videos
+
+
+
+
 def writeBio(file, bio):
 	keys = list(bio.keys())
 	for key in keys:
@@ -8,7 +36,7 @@ def writeBio(file, bio):
 		else:
 			file.write(bio[key] + "\n")
 
-def getExercises(level):
+def inputExercises():
 	exercises = []
 	print("Enter some exercises below. Enter \"exit\" to exit")
 	choice = input()
@@ -29,7 +57,7 @@ def getBioInfo(username):
 	bio["height"] = input("Enter your height: ")
 	bio["weight"] = input("Enter your weight: ")
 	bio["level"] = input("Enter low, medium, or high: ")
-	bio["exercises"] = getExercises(bio["level"]) # NUMBER EXERCISES?
+	bio["exercises"] = inputExercises() # NUMBER EXERCISES?
 	return bio
 
 def getFilePath(username):
@@ -184,6 +212,7 @@ def signUp():
 		signIn()
 	else:
 		print("Have a nice day!")
+
 
 
 
