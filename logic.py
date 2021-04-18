@@ -1,6 +1,9 @@
 from googleapiclient.discovery import build
+from PIL import Image
+import requests
+from io import BytesIO
 
-def getVideoInfo(interest):
+def getVideos(interest):
 	apiKey = "AIzaSyB5cen77m2JQjahw-sWEtrztb78Jg7-KUc"
 	youtube = build('youtube', 'v3', developerKey=apiKey)
 	request = youtube.search().list(
@@ -29,12 +32,46 @@ def getVideoInfo(interest):
 		ids.append(itemId)
 	return urls, videos, images, ids
 
-def getChannels():
-	pass
+def getChannels(interest):
+	apiKey = "AIzaSyB5cen77m2JQjahw-sWEtrztb78Jg7-KUc"
+	youtube = build('youtube', 'v3', developerKey=apiKey)
+	request = youtube.search().list(
+		part='snippet',
+		maxResults=10,
+		q=interest,
+		relevanceLanguage="en",
+		#order="rating",
+		type="channel"
+	)
+	response = request.execute()
+	items = response['items']
+	print(items[0])
+	urls = []
+	names = []
+	images = []
+	ids = []
+	for item in items:
+		channelId = item['id']['channelId']
+		url = 'https://www.youtube.com/watch?v=' + channelId
+		urls.append(url)
+		name = item['snippet']['channelTitle']
+		names.append(name)
+		image = item['snippet']['thumbnails']['default']['url']
+		images.append(image)
+		itemId = item['id']['channelId']
+		ids.append(itemId)
+	return urls, names, images, ids
 
 
-def saveThumbnails():
-	pass
+def saveImages(images, ids): # images are image URLs, ids are the unique id of the channel or video
+	imgPaths = []
+	for spot in range(10):
+		response = requests.get(images[spot])
+		img = Image.open(BytesIO(response.content))
+		filePath = "./images/" + ids[spot] + ".jpg"
+		imgPaths.append(filePath)
+		img = img.save(filePath)
+	return imgPaths
 
 
 def writeBio(file, bio):
