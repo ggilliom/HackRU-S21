@@ -16,6 +16,7 @@ def getVideoInfo(interest):
 	urls = []
 	videos = []
 	images = []
+	ids = []
 	for item in items:
 		video = item['snippet']['title']
 		videos.append(video)
@@ -24,7 +25,9 @@ def getVideoInfo(interest):
 		urls.append(url)
 		image = item['snippet']['thumbnails']['default']['url']
 		images.append(image)
-	return urls, videos, images
+		itemId = item['id']['videoId']
+		ids.append(itemId)
+	return urls, videos, images, ids
 
 def getChannels():
 	pass
