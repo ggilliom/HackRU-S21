@@ -2,9 +2,13 @@ from googleapiclient.discovery import build
 from PIL import Image
 import requests
 from io import BytesIO
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 def getVideos(interest):
-	apiKey = "AIzaSyDvHS8QUpTiFewDPoQdfRMyDdZ0CfvEWOM"
+	apiKey = "AIzaSyB5cen77m2JQjahw-sWEtrztb78Jg7-KUc"
 	youtube = build('youtube', 'v3', developerKey=apiKey)
 	request = youtube.search().list(
 		part='snippet',
@@ -33,7 +37,7 @@ def getVideos(interest):
 	return urls, videos, images, ids
 
 def getChannels(interest):
-	apiKey = "AIzaSyDvHS8QUpTiFewDPoQdfRMyDdZ0CfvEWOM"
+	apiKey = "AIzaSyB5cen77m2JQjahw-sWEtrztb78Jg7-KUc"
 	youtube = build('youtube', 'v3', developerKey=apiKey)
 	request = youtube.search().list(
 		part='snippet',
@@ -108,8 +112,8 @@ def getBioInfo(username):
 	bio["interests"] = inputInterests() # NUMBER INTERESTS?
 	return bio
 
-def getFilePath(username):
-	fileName = username + ".txt"
+def getFilePath(username, ext):
+	fileName = username + ext
 	filePath = "./userInfo/" + fileName
 	return filePath
 
@@ -117,13 +121,13 @@ def getFilePath(username):
 def createProfile(username):
 	bio = getBioInfo(username)
 	#print(bio)
-	file = open(getFilePath(username), "w+")
+	file = open(getFilePath(username, '.txt'), "w+")
 	writeBio(file, bio)
 	file.close()
 
 
-def isNameFree(username):
-	filePath = getFilePath(username)
+def isNameFree(username, ext):
+	filePath = getFilePath(username, ext)
 	try:
 		file = open(filePath,  "r+")
 	except:
@@ -136,8 +140,17 @@ def isNameFree(username):
 	else:
 		return False
 
-def doesNameExist(username):
-	filePath = getFilePath(username)
+def doesNameExist(username, ext):
+	filePath = getFilePath(username, ext)
+	try:
+		file = open(filePath, "r+")
+	except:
+		return False
+	file.close()
+	return True
+
+def doesNameExistCSV(username, ext):
+	filePath = "./fitnessInfo/" + username + '.csv'
 	try:
 		file = open(filePath, "r+")
 	except:
@@ -147,7 +160,7 @@ def doesNameExist(username):
 
 
 def checkPassword(username, password):
-	filePath = getFilePath(username)
+	filePath = getFilePath(username, '.txt')
 	file = open(filePath, "r")
 	lines = getFileLines(file)
 	if lines[1] == password:
@@ -162,49 +175,49 @@ def getFileLines(file):
 	return lines
 
 def getName(username):
-	filePath = getFilePath(username)
+	filePath = getFilePath(username, '.txt')
 	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[2]
 
 def getAge(username):
-	filePath = getFilePath(username)
+	filePath = getFilePath(username, '.txt')
 	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[3]
 
 def getPronouns(username):
-	filePath = getFilePath(username)
+	filePath = getFilePath(username, '.txt')
 	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[4]
 
 def getHeight(username):
-	filePath = getFilePath(username)
+	filePath = getFilePath(username, '.txt')
 	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[5]
 
 def getWeight(username):
-	filePath = getFilePath(username)
+	filePath = getFilePath(username, '.txt')
 	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[6]
 
 def getLevel(username):
-	filePath = getFilePath(username)
+	filePath = getFilePath(username, '.txt')
 	file = open(filePath, "r")
 	lines = getFileLines(file)
 	file.close()
 	return lines[7]
 
 def getInterests(username):
-	filePath = getFilePath(username)
+	filePath = getFilePath(username, '.txt')
 	file = open(filePath, "r")
 	lines = getFileLines(file)
 	interests = []
@@ -224,7 +237,7 @@ def signedIn(username):
 def signIn():
 	print("signIn")
 	username = input("Please enter your username: ")
-	exists = doesNameExist(username) # checks if username is in database already
+	exists = doesNameExist(username, '.txt') # checks if username is in database already
 	if exists:
 		password = input("Please enter your password: ")
 		isCorrect = checkPassword(username, password)
@@ -247,12 +260,12 @@ def signIn():
 def signUp(): 
 	print("signUp")
 	username = input("Please enter your username: ")
-	available = isNameFree(username) # checks if the username is free
+	available = isNameFree(username, '.txt') # checks if the username is free
 	#print(available)
 	while not available:
 		print("The username \"" + username + "\" already exists. Please try another one")
 		username = input("Please enter another username: ")
-		available = isNameFree(username)
+		available = isNameFree(username, '.txt')
 	print("That username is available!")
 	userInfo = createProfile(username)
 	choice = input("Would you like to sign in? Enter \"yes\" or \"no\": ")
@@ -262,6 +275,25 @@ def signUp():
 		print("Have a nice day!")
 
 
+def makeCSVFile(username):
+	print('in1')
+	path = "./fitnessInfo/" + username + '.csv'
+	exists = doesNameExistCSV(username, '.csv')
+	if exists:
+		print('exists')
+		f = open(path, 'r+')
+	else:
+		print('doesnt')
+		data = {"dates": [], "distance (miles)": [], "duration (hh:mm:ss)": [], "pace (mph)": []}
+		data_df = pd.DataFrame(data)
+		data_df.to_csv(path)
+		f = open(path, 'r+')
+		print('done')
+
+def getDF(username):
+	path = "./fitnessInfo/" + username + '.csv'
+	df = pd.read_csv(path, index_col=0)
+	return df
 
 
 
