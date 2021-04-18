@@ -6,6 +6,7 @@ yt.py
 env
 __pycache__
 /userInfo/*.txt
+/images/*.jpg
 
 
 # Byte-compiled / optimized / DLL files
