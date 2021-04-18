@@ -188,9 +188,6 @@ class SignUpPage1(tk.Frame):
 			print(text)
 
 		user_data["interests"] = self.parse_interests(self.interests.get("1.0", tk.END))
-		print(user_data["interests"])
-
-		print(user_data)
 
 		username = user_data["Username"]
 

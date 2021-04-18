@@ -29,8 +29,8 @@ def getVideoInfo(exercise):
 def writeBio(file, bio):
 	keys = list(bio.keys())
 	for key in keys:
-		if key == "exercises":
-			file.write("EXERCISES\n")
+		if key == "interests":
+			file.write("INTERESTS\n")
 			for opt in bio[key]:
 				file.write(opt + "\n")
 		else:
