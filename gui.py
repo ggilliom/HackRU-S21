@@ -3,12 +3,18 @@ import logic as l
 
 
 user_data = {}
+main_username = "blank"
 user_data["Username"] = "blank"
+user_data["Interests"] = "blank1"
+#name = tk.StringVar()
+
 class HealthGUI(tk.Tk):
 
 	def __init__(self):
 		tk.Tk.__init__(self)
 		cont = tk.Frame(self)
+		global name
+		name = tk.StringVar()
 		self.geometry("800x600")
 		self.configure(bg = "cyan")
 
@@ -19,6 +25,7 @@ class HealthGUI(tk.Tk):
 		storage.grid_columnconfigure(0, weight = 1)
 		#storage.grid_rowconfigure(1, weight = 1)
 		#storage.grid_columnconfigure(1, weight = 1)
+
 
 		# all frames
 		self.all_frames = {}
@@ -36,6 +43,7 @@ class HealthGUI(tk.Tk):
 
 
 		self.display_page(FirstPage)
+		self.mainloop()
 
 	def display_page(self, f):
 		page = self.all_frames[f]
@@ -78,12 +86,15 @@ class SignInPage(tk.Frame):
 		self.back_button.grid(row=3, column=0, pady=55)
 
 	def try_sign_in(self):
+		global main_username
 		username = self.e1.get()
 		username_exists = l.doesNameExist(username)
 		password = self.e2.get()
 		if username_exists:
 			is_correct = l.checkPassword(username, password)
 			if is_correct:
+				main_username = username
+				name.set(username)
 				self.cont.display_page(MainPage)
 			else:
 				tk.Label(self, text="Incorrect Password!",bg ="sky blue", font=("Arial", 14), fg="red").grid(row=2, column = 1)
@@ -178,6 +189,7 @@ class SignUpPage1(tk.Frame):
 
 
 	def get_data(self, entries):
+		global user_data
 
 		fields = ["Name", "Age", "Pronouns", "Height", "Weight", "Activity Level"]
 
@@ -188,6 +200,7 @@ class SignUpPage1(tk.Frame):
 			print(text)
 
 		user_data["interests"] = self.parse_interests(self.interests.get("1.0", tk.END))
+		print(user_data)
 
 		username = user_data["Username"]
 
@@ -205,8 +218,43 @@ class MainPage(tk.Frame):
 		self.grid_columnconfigure(0, weight=1)
 		self.grid_columnconfigure(1, weight=1)
 		self.grid_columnconfigure(2, weight=1)
-		tk.Label(self, text="Welcome to your Health & Fitness Account!", font='Helvetica 18 bold').grid( row = 0, column=0, columnspan=3, pady=15)
-		tk.Button(self, text="Log Food").grid(row=1, column=0)
+		self.lab = tk.Label(self, text="Welcome to your Health & Fitness Account!", font='Helvetica 18 bold')
+		self.lab.grid( row = 0, column=0, columnspan=3, pady=15)
+		
+		
+		tk.Button(self, text="Refresh Page", command=lambda: self.update_page()).grid(row=0, column=2)
+		tk.Button(self, text="Log Food").grid(row=1, column=0, pady=20)
+		tk.Button(self, text="Log Workout").grid(row=1, column=1, pady=20)
+
+	def update_page(self):
+		self.get_all_user_data()
+		for i in range(len(user_data["Interests"]) - 1):
+			tk.Button(self, text="Show Videos Related to " + user_data["Interests"][i]).grid(row=i+2, column=0, pady=20)
+		self.lab.config(text = "Welcome to your Health & Fitness Account, " + user_data["Name"])
+		
+	def get_all_user_data(self):
+		global main_username
+		global user_data
+		print(main_username)
+		fields = ["Name", "Age", "Pronouns", "Height", "Weight", "Activity Level"]
+		name = l.getName(main_username)
+		age = l.getAge(main_username)
+		pronouns = l.getPronouns(main_username)
+		height = l.getHeight(main_username)
+		weight = l.getWeight(main_username)
+		act_level = l.getLevel(main_username)
+		interests = l.getInterests(main_username)
+		data = [name, age, pronouns, height, weight, act_level, interests]
+		user_data["Username"] = main_username
+		user_data["Interests"] = interests
+
+		for i in range(len(fields)):
+			text = data[i]
+			user_data[fields[i]] = text
+
+		print(user_data)
+
+
 		
 
 
@@ -218,4 +266,4 @@ class MainPage(tk.Frame):
 
 
 app_instance = HealthGUI()
-app_instance.mainloop()
+#app_instance.mainloop()
