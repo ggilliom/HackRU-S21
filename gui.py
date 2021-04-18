@@ -167,7 +167,7 @@ class SignUpPage1(tk.Frame):
 
 		tk.Label(self, text="Enter 2 - 5 of your health and fitness interests: ").grid(row=8, column=0)
 		self.interests = tk.Text(self)
-		self.interests.grid(row=8, column=1)
+		self.interests.grid(row=8, column=1, rowspan=4)
 
 
 		self.b = tk.Button(self, text = "Continue", command = lambda: self.get_data([self.e3, self.e4, self.e5, self.e6, self.e7, self.e8]))
@@ -187,7 +187,8 @@ class SignUpPage1(tk.Frame):
 			user_data[fields[i]] = text
 			print(text)
 
-		user_data["Interests"] = self.parse_interests(self.interests.get("1.0", tk.END))
+		user_data["interests"] = self.parse_interests(self.interests.get("1.0", tk.END))
+		print(user_data["interests"])
 
 		print(user_data)
 
@@ -207,7 +208,8 @@ class MainPage(tk.Frame):
 		self.grid_columnconfigure(0, weight=1)
 		self.grid_columnconfigure(1, weight=1)
 		self.grid_columnconfigure(2, weight=1)
-		#tk.Label(self, text="Hi, " + user_data["Username"], font='Helvetica 18 bold').grid( row = 0, column=0, columnspan=3)
+		tk.Label(self, text="Welcome to your Health & Fitness Account!", font='Helvetica 18 bold').grid( row = 0, column=0, columnspan=3, pady=15)
+		tk.Button(self, text="Log Food").grid(row=1, column=0)
 		
 
 
