@@ -16,7 +16,7 @@ class HealthGUI(tk.Tk):
 		cont = tk.Frame(self)
 		global name
 		name = tk.StringVar()
-		self.geometry("800x600")
+		self.geometry("1200x800")
 		self.configure(bg = "cyan")
 
 		storage = tk.Frame(self)
@@ -238,27 +238,31 @@ class MainPage(tk.Frame):
 		webbrowser.open(url, new=1)
 
 	def show_video_content(self, interest):
+		print(interest)
 		local_interest = all_stuff[interest]
 		j = 2
 		for title, url in zip(local_interest["names"], all_stuff[interest]['urls']):
-			tk.Label(self, text=title).grid(row=j, column=1)
-			tk.Button(self, text="Go to video!", command = lambda: self.oepn_url(url)).grid(row=j, column=1)
+			j1 = j + 1
+			#tk.Label(self, text=title).grid(row=j, column=1, pady=10)
+			tk.Button(self, text=title, command = lambda url = url: self.oepn_url(url)).grid(row=j, column=1, pady=10)
 			j += 1
-			if j == 6:
+			if j == 12:
 				break
 
 
 	def update_page(self):
 		self.get_all_user_data()
-		l1 = [interest for interest in user_data["Interests"]]
-		for i in range(len(user_data["Interests"]) - 1):
+		l1 = user_data["Interests"]
+		print(l1)
+		for i in range(len(l1) - 1):
+			print("i: ", i)
 			# plae button on screen
-			tk.Button(self, text="Show Videos Related to " + user_data["Interests"][i], command = lambda: self.show_video_content(l1[i])).grid(row=i+2, column=0, pady=20)
+			tk.Button(self, text="Show Videos Related to " + l1[i], command = lambda i=i: self.show_video_content(l1[i])).grid(row=i+2, column=0, pady=20)
 			# append to user_videos
 			user_urls, user_videos, user_images, user_ids = l.getVideos(user_data["Interests"][i])
 			all_stuff[user_data["Interests"][i]] = {"urls": user_urls, "names": user_videos, "images": user_images, "ids": user_ids}
 
-		print(all_stuff)
+		#print(all_stuff)
 
 		self.lab.config(text = "Welcome to your Health & Fitness Account, " + user_data["Name"])
 		

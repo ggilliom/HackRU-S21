@@ -4,7 +4,7 @@ import requests
 from io import BytesIO
 
 def getVideos(interest):
-	apiKey = "AIzaSyB5cen77m2JQjahw-sWEtrztb78Jg7-KUc"
+	apiKey = "AIzaSyDvHS8QUpTiFewDPoQdfRMyDdZ0CfvEWOM"
 	youtube = build('youtube', 'v3', developerKey=apiKey)
 	request = youtube.search().list(
 		part='snippet',
@@ -33,7 +33,7 @@ def getVideos(interest):
 	return urls, videos, images, ids
 
 def getChannels(interest):
-	apiKey = "AIzaSyB5cen77m2JQjahw-sWEtrztb78Jg7-KUc"
+	apiKey = "AIzaSyDvHS8QUpTiFewDPoQdfRMyDdZ0CfvEWOM"
 	youtube = build('youtube', 'v3', developerKey=apiKey)
 	request = youtube.search().list(
 		part='snippet',
@@ -77,7 +77,7 @@ def saveImages(images, ids): # images are image URLs, ids are the unique id of t
 def writeBio(file, bio):
 	keys = list(bio.keys())
 	for key in keys:
-		if key == "interests":
+		if key == "Interests":
 			file.write("INTERESTS\n")
 			for opt in bio[key]:
 				file.write(opt + "\n")
