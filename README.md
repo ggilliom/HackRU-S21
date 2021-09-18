@@ -3,7 +3,7 @@ Collaborative Spring 2021 HackRU Project
 <br>
 By: Bennett Kahn and Garrett Gilliom
 
-## Instructions to Run ##
+## How to Use ##
 
 Multiple imports/modules are needed. It is recommended that a terminal-based virtual environment is used to run this program, although if the necessary installations have already been made then it is not necessary.
 
@@ -44,3 +44,13 @@ Python3 is required to run. Command to run:
 `$ python3 gui.py`
 
 Exit out of the window to quit.
+
+### Demonstration ###
+
+A demonstration video for the project can be found
+[here](https://www.youtube.com/watch?v=cW2SeGC9-pc&ab_channel=GarrettGilliom).
+<br>
+<br>
+Our team was pressed for time, so our demonstration video is admittedly unprofessional. Nevertheless, it shows the variety of functions and capabilities we implemented alongside our committment to the full, well-rounded completion of our project.
+<br>
+<br>
